@@ -8,15 +8,20 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    private Animator _animator;
+
     Vector2 movementDir;
     Vector3 lastMoveDir;
 
+    bool _canAtack;
     bool _dash;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
         _dash = false;
+        _canAtack = true;
     }
 
     // Update is called once per frame
@@ -25,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
         //Input
         movementDir.x = Input.GetAxisRaw("Horizontal");
         movementDir.y = Input.GetAxisRaw("Vertical");
+
+        _animator.SetFloat("Horizontal", movementDir.x);
+        _animator.SetFloat("Vertical", movementDir.y);
+        _animator.SetFloat("Speed", movementDir.sqrMagnitude);
+
+        //Debug.Log(movementDir.x + " , " + movementDir.y);
 
         Atack();
         Dash();
@@ -67,12 +78,40 @@ public class PlayerMovement : MonoBehaviour
 
     void Atack()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) //Input.GetAxisRaw("Atack") > 0
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && _canAtack) //Input.GetAxisRaw("Atack") > 0
         {
+            //AtackCooldown
+            _canAtack = false;
+            StartCoroutine(NextAtack());
             //Atack logic - Each atack has a diferent animation
-            int AtackIndex = Random.Range(0, 5);
+            int AtackIndex = Random.Range(0, 3);
             Debug.Log(AtackIndex);
+
+            //Logic to swith atacks
+            switch (AtackIndex)
+            {
+                case 0:
+                    _animator.SetTrigger("Machete");
+                    //Instantiate Atack
+                    break;
+                case 1:
+                    _animator.SetTrigger("Gas");
+                    //Isntantiate Gas
+                    break;
+                case 2:
+                    _animator.SetTrigger("Rock");
+                    //Instatntiate Rock
+                    break;
+            }
+            
         }
+        
+    }
+
+    IEnumerator NextAtack()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _canAtack = true;
     }
 
     IEnumerator CutDash()
