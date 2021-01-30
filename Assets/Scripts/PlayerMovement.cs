@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    private Animator _animator;
+
     Vector2 movementDir;
     Vector3 lastMoveDir;
 
@@ -16,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponent<Animator>();
         _dash = false;
     }
 
@@ -25,6 +28,12 @@ public class PlayerMovement : MonoBehaviour
         //Input
         movementDir.x = Input.GetAxisRaw("Horizontal");
         movementDir.y = Input.GetAxisRaw("Vertical");
+
+        _animator.SetFloat("Horizontal", movementDir.x);
+        _animator.SetFloat("Vertical", movementDir.y);
+        _animator.SetFloat("Speed", movementDir.sqrMagnitude);
+
+        //Debug.Log(movementDir.x + " , " + movementDir.y);
 
         Atack();
         Dash();
@@ -72,7 +81,12 @@ public class PlayerMovement : MonoBehaviour
             //Atack logic - Each atack has a diferent animation
             int AtackIndex = Random.Range(0, 5);
             Debug.Log(AtackIndex);
+
+            //Logic to swith atacks
+
+            _animator.SetTrigger("Machete");
         }
+        
     }
 
     IEnumerator CutDash()
