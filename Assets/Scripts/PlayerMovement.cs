@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 movementDir;
     Vector3 lastMoveDir;
 
+    bool _canAtack;
     bool _dash;
 
     private void Start()
@@ -20,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _dash = false;
+        _canAtack = true;
     }
 
     // Update is called once per frame
@@ -49,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        Debug.Log(movementDir);
         rb.MovePosition(rb.position + movementDir * moveSpeed * Time.fixedDeltaTime);
         lastMoveDir = movementDir;
     }
@@ -77,17 +78,40 @@ public class PlayerMovement : MonoBehaviour
 
     void Atack()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) //Input.GetAxisRaw("Atack") > 0
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && _canAtack) //Input.GetAxisRaw("Atack") > 0
         {
+            //AtackCooldown
+            _canAtack = false;
+            StartCoroutine(NextAtack());
             //Atack logic - Each atack has a diferent animation
-            int AtackIndex = Random.Range(0, 5);
+            int AtackIndex = Random.Range(0, 3);
             Debug.Log(AtackIndex);
 
             //Logic to swith atacks
-
-            _animator.SetTrigger("Machete");
+            switch (AtackIndex)
+            {
+                case 0:
+                    _animator.SetTrigger("Machete");
+                    //Instantiate Atack
+                    break;
+                case 1:
+                    _animator.SetTrigger("Gas");
+                    //Isntantiate Gas
+                    break;
+                case 2:
+                    _animator.SetTrigger("Rock");
+                    //Instatntiate Rock
+                    break;
+            }
+            
         }
         
+    }
+
+    IEnumerator NextAtack()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _canAtack = true;
     }
 
     IEnumerator CutDash()
