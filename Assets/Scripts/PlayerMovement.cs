@@ -49,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
+        Debug.Log(movementDir);
         rb.MovePosition(rb.position + movementDir * moveSpeed * Time.fixedDeltaTime);
         lastMoveDir = movementDir;
     }
