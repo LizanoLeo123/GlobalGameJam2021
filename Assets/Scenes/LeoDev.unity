@@ -34599,6 +34599,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5887241161047373930, guid: 5ca23716809f181499db004300dbf65c,
+        type: 3}
+      propertyPath: patrolNumber
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5887241161047373933, guid: 5ca23716809f181499db004300dbf65c,
         type: 3}
       propertyPath: m_Name
