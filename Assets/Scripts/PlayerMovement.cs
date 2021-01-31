@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject healthbarObject;
 
     private UI_Manager _uiManager;
+    private GameManager _gameManager;
 
     private Rigidbody2D rb;
 
@@ -63,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
         healthbarObject.SetActive(false);
 
         _uiManager = GameObject.Find("Canvas").GetComponent<UI_Manager>();
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
@@ -306,6 +308,9 @@ public class PlayerMovement : MonoBehaviour
         remainingVegetables--;
         //Update UI;
         _uiManager.UpdateRemainingVegetables(remainingVegetables);
+
+        if (remainingVegetables == 0)
+            _gameManager.TransitionNextScene();
     }
 
     public void TakeDamage(int damage)
