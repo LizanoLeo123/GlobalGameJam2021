@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    public Animator bgAnimator;
 
     public void playGame()
     {
@@ -13,6 +14,18 @@ public class MainMenu : MonoBehaviour
 
     public void quitGame() {
         Application.Quit();
+    }
+
+    public void StartGame()
+    {
+        bgAnimator.SetTrigger("Start");
+        StartCoroutine(LoadMainScene());
+    }
+
+    IEnumerator LoadMainScene()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("LeoDev");
     }
 
 }

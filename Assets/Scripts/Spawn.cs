@@ -9,13 +9,13 @@ public class Spawn : MonoBehaviour
     public float Speed;
     public int cant;
     List<GameObject> allVegetable = new List<GameObject>();
-    public List<GameObject> Areas = new List<GameObject>();
+    private GameObject[] Areas;
 
 
     private void Start()
     {
         InvokeRepeating("Generate", 0, Speed);
-
+        Areas = GameObject.FindGameObjectsWithTag("SpawnArea");
     }
 
     void Generate()
@@ -24,7 +24,7 @@ public class Spawn : MonoBehaviour
 
         while (cant > 0)
         {
-            int areaRand = Random.Range(0, Areas.Count);
+            int areaRand = Random.Range(0, Areas.Length);
 
             float posX = Areas[areaRand].transform.position.x;
             float posY = Areas[areaRand].transform.position.y;
