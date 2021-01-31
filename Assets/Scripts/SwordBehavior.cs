@@ -21,7 +21,7 @@ public class SwordBehavior : MonoBehaviour
         if (collision.transform.tag == "Enemy")
         {
             //Logic To damage Enemy
-            Debug.Log("Sword Hit");
+            //Debug.Log("Sword Hit");
             _collider.enabled = false;
         }
     }

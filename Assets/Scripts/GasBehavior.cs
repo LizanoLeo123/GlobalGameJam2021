@@ -21,7 +21,7 @@ public class GasBehavior : MonoBehaviour
         if(collision.transform.tag == "Enemy")
         {
             //Logic To damage Enemy
-            Debug.Log("GasHit");
+            //Debug.Log("GasHit");
             _collider.enabled = false;
         }
     }
