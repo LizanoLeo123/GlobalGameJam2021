@@ -7,11 +7,13 @@ public class TaltuzaFollowBehavior : StateMachineBehaviour
     private Transform patrolLocation;
     private Transform playerPos;
     public float speed;
-    public int patrolNumber;
+    //public int patrolNumber;
+    private int patrolNumber;
 
     // Start
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        patrolNumber = animator.GetComponent<TaltuzaController>().patrolNumber;
         playerPos = GameObject.FindGameObjectWithTag("Player").transform;
         patrolLocation = GameObject.Find("TaltuzaPatrolSpots" + patrolNumber.ToString()).transform;
     }

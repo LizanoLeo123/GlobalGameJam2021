@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class TaltuzaIdleBehavior : StateMachineBehaviour
 {
-	public int patrolNumber;
+	//public int patrolNumber;
+	private int patrolNumber;
 	private Transform patrolLocation;
 	private Transform playerPos;
 
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		patrolNumber = animator.GetComponent<TaltuzaController>().patrolNumber;
 		patrolLocation = GameObject.Find("TaltuzaPatrolSpots" + patrolNumber.ToString()).transform;
 		playerPos = GameObject.FindGameObjectWithTag("Player").transform;
+
 	}
 
 

@@ -6,7 +6,8 @@ public class TaltuzaPatrollingBehavior : StateMachineBehaviour
 {
     private TaltuzaPatrolSpots patrol;
     public float speed;
-    public int patrolNumber;
+    //public int patrolNumber;
+    private int patrolNumber;
     private int randomSpot;
     private Transform patrolLocation;
     private Transform playerPos;
@@ -18,6 +19,7 @@ public class TaltuzaPatrollingBehavior : StateMachineBehaviour
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        patrolNumber = animator.GetComponent<TaltuzaController>().patrolNumber;
         patrol = GameObject.Find("TaltuzaPatrolSpots" + patrolNumber.ToString()).GetComponent<TaltuzaPatrolSpots>();
         randomSpot = Random.Range(0, patrol.patrolPoints.Length);
         patrolLocation = GameObject.Find("TaltuzaPatrolSpots" + patrolNumber.ToString()).transform;
