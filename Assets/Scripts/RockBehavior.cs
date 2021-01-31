@@ -25,7 +25,7 @@ public class RockBehavior : MonoBehaviour
         if (collision.transform.tag == "Enemy")
         {
             //Logic To damage Enemy
-            Debug.Log("RockHit");
+            //Debug.Log("RockHit");
             _collider.enabled = false;
             Destroy(gameObject, 0.1f);
         }
