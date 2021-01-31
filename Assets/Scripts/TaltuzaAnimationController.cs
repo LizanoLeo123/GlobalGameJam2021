@@ -24,4 +24,5 @@ public class TaltuzaAnimationController : MonoBehaviour
         _animator.SetFloat("VelX", _rigidbody2d.velocity.normalized.x);
         _animator.SetFloat("VelY", _rigidbody2d.velocity.normalized.y);
     }
+
 }
