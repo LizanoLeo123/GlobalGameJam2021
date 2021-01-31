@@ -47,7 +47,9 @@ public class InputBehavior : MonoBehaviour
             //Debug.Log("Playing with keyboard");
         }
         else if((Input.GetKeyDown(KeyCode.Joystick1Button0) ||
-            Input.GetKeyDown(KeyCode.Joystick1Button1)) && !pController)
+            Input.GetKeyDown(KeyCode.Joystick1Button1) ||
+            Input.GetKeyDown(KeyCode.Joystick1Button2) ||
+            Input.GetKeyDown(KeyCode.Joystick1Button3)) && !pController)
         {
             pKeyboard = false;
             pController = true;

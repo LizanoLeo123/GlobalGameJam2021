@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
 
     IEnumerator LoadMainScene()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(4f);
         SceneManager.LoadScene("LeoDev");
     }
 
