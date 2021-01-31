@@ -10,6 +10,7 @@ TagManager:
   - PatrolSpots
   - GasRefill
   - Vegetable
+  - SpawnArea
   layers:
   - Default
   - TransparentFX
