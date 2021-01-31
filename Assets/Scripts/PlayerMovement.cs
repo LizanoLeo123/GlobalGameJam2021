@@ -19,13 +19,30 @@ public class PlayerMovement : MonoBehaviour
 
     public List<Sprite> poisonTankSprites;
 
+    public HealthBar healthbar;
+    public GameObject healthbarObject;
+
+    private UI_Manager _uiManager;
+
     private Rigidbody2D rb;
 
     private Animator _animator;
 
     [HideInInspector]
+    public bool playingWithMouse;
+
+    //Move with Input system
+    [HideInInspector]
     public Vector2 movementDir;
     Vector3 lastMoveDir;
+
+    //Move with mouse
+    private Vector3 mousePosition;
+    //private Rigidbody2D rb;
+    private Vector2 direction;
+    private float moveSpeedMouse = 20f;
+
+    int _currentHealth;
 
     bool _canAtack;
     bool _dash;
@@ -34,7 +51,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        playingWithMouse = false;
         remainingVegetables = 10;
+        _currentHealth = 10;
+        healthbar.SetHealth(_currentHealth);
+        healthbarObject.SetActive(false);
+
+        _uiManager = GameObject.Find("Canvas").GetComponent<UI_Manager>();
 
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
@@ -49,25 +72,35 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Input
-        movementDir.x = Input.GetAxisRaw("Horizontal");
-        movementDir.y = Input.GetAxisRaw("Vertical");
+        if (!playingWithMouse)
+        {
+            //Input
+            movementDir.x = Input.GetAxisRaw("Horizontal");
+            movementDir.y = Input.GetAxisRaw("Vertical");
 
-        _animator.SetFloat("Horizontal", movementDir.x);
-        _animator.SetFloat("Vertical", movementDir.y);
-        _animator.SetFloat("Speed", movementDir.sqrMagnitude);
-
-        //Debug.Log(movementDir.x + " , " + movementDir.y);
+            _animator.SetFloat("Horizontal", movementDir.x);
+            _animator.SetFloat("Vertical", movementDir.y);
+            _animator.SetFloat("Speed", movementDir.sqrMagnitude);
+        }
 
         Atack();
         Dash();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            TakeDamage(1);
+        }
         
     }
 
     private void FixedUpdate()
     {
         //Movement
-        Move();
+        if (!playingWithMouse)
+            Move();
+        else
+            MoveWithMouse();
+        
         ManageDash();
     }
 
@@ -77,12 +110,23 @@ public class PlayerMovement : MonoBehaviour
         lastMoveDir = movementDir;
     }
 
+    void MoveWithMouse()
+    {
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        direction = (mousePosition - transform.position).normalized;
+        rb.velocity = new Vector2(direction.x * moveSpeedMouse, direction.y * moveSpeed);
+        lastMoveDir = direction;
+        _animator.SetFloat("Horizontal", direction.x);
+        _animator.SetFloat("Vertical", direction.y);
+        _animator.SetFloat("Speed", direction.sqrMagnitude);
+    }
+
     void Dash()
     {
         //Dash animation
 
         //Dash Logic
-        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Joystick1Button1)) && !_dash)
+        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Joystick1Button1) || Input.GetMouseButtonDown(1)) && !_dash)
         {
             _dash = true;
         }
@@ -100,19 +144,19 @@ public class PlayerMovement : MonoBehaviour
 
     void Atack()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && _canAtack) //Input.GetAxisRaw("Atack") > 0
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetMouseButtonDown(0)) && _canAtack) //Input.GetAxisRaw("Atack") > 0
         {
             //AtackCooldown
             _canAtack = false;
             StartCoroutine(NextAtack());
             //Atack logic - Each atack has a diferent animation
             int AtackIndex = Random.Range(0, 3);
-            //Debug.Log(AtackIndex);
-
 
             Vector3 spawnPoint;
             float atackAngle;
 
+            if (playingWithMouse)
+                movementDir = direction;
             //Logic to swith atacks
             switch (AtackIndex)
             {
@@ -234,7 +278,26 @@ public class PlayerMovement : MonoBehaviour
     {
         remainingVegetables--;
         //Update UI;
-        Debug.Log("Remaining vegetables: " + remainingVegetables);
+        _uiManager.UpdateRemainingVegetables(remainingVegetables);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        //Show healthbar
+        healthbarObject.SetActive(true);
+
+        _currentHealth -= damage;
+        healthbar.SetHealth(_currentHealth);
+
+        if(_currentHealth <= 0)
+        {
+            //Die Logic
+        }
+        else
+        {
+            //Hide Healthbar
+            StartCoroutine(HideHealthbar());
+        }
     }
 
     IEnumerator NextAtack()
@@ -247,6 +310,12 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         gasTank.enabled = false;
+    }
+
+    IEnumerator HideHealthbar()
+    {
+        yield return new WaitForSeconds(2f);
+        healthbarObject.SetActive(false);
     }
 
     IEnumerator CutDash()
