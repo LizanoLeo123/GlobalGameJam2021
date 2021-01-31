@@ -20,8 +20,6 @@ public class Spawn : MonoBehaviour
 
     void Generate()
     {
-        
-
         while (cant > 0)
         {
             int areaRand = Random.Range(0, Areas.Length);
