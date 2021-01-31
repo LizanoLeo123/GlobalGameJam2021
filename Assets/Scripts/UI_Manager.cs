@@ -13,6 +13,7 @@ public class UI_Manager : MonoBehaviour
 
     private void Start()
     {
+        keyboardUI.SetActive(true);
         StartCoroutine(HideUI());
     }
 
@@ -24,16 +25,22 @@ public class UI_Manager : MonoBehaviour
     public void ShowKeyboardUI()
     {
         keyboardUI.SetActive(true);
+        controllerUI.SetActive(false);
+        mouseUI.SetActive(false);
         StartCoroutine(HideUI());
     }
     public void ShowControllerUI()
     {
+        keyboardUI.SetActive(false);
         controllerUI.SetActive(true);
+        mouseUI.SetActive(false);
         StartCoroutine(HideUI());
     }
 
     public void ShowMouseUI()
     {
+        keyboardUI.SetActive(false);
+        controllerUI.SetActive(false);
         mouseUI.SetActive(true);
         StartCoroutine(HideUI());
     }

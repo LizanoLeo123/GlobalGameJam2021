@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LeoDev.unity
+    guid: 8c2a6b41d10a03f498f8c95e748453a6
+  - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 84da3ed879e83e8408b925de4241cdf0
   - enabled: 1
