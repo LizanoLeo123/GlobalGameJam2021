@@ -7,6 +7,7 @@ TagManager:
   - Enemy
   - EnemyAtack
   - PlayerAtack
+  - PatrolSpots
   layers:
   - Default
   - TransparentFX
