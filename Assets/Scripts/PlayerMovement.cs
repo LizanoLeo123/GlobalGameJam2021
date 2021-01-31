@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed;
+    public int remainingVegetables;
 
     //Atack Prefabs
     public GameObject GasPrefab;
@@ -12,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public GameObject RockPrefab;
     public GameObject GasTankPrefab;
 
+    public GameObject SunTrail;
+    
     public SpriteRenderer gasTank;
 
     public List<Sprite> poisonTankSprites;
@@ -31,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        remainingVegetables = 10;
+
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _dash = false;
@@ -38,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
         _poisonTank = 4;
         gasTank.enabled = false;
         Instantiate(GasTankPrefab, transform.position + new Vector3(2, 0, 0), Quaternion.identity);
+        Instantiate(SunTrail, transform.position + new Vector3(-0.52f, -0.57f, 0), Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -222,6 +228,13 @@ public class PlayerMovement : MonoBehaviour
             
         }
         
+    }
+
+    public void CollectVegetable()
+    {
+        remainingVegetables--;
+        //Update UI;
+        Debug.Log("Remaining vegetables: " + remainingVegetables);
     }
 
     IEnumerator NextAtack()
