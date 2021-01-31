@@ -32,6 +32,4 @@ public class PlayerMovementMouse : MonoBehaviour
         direction = (mousePosition - transform.position).normalized;
         rb.velocity = new Vector2(direction.x * moveSpeed, direction.y * moveSpeed);
     }
-
-
 }

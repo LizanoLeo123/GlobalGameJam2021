@@ -6,11 +6,17 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed;
 
+    //Atack Prefabs
+    public GameObject GasPrefab;
+    public GameObject SwordPrefab;
+    public GameObject RockPrefab;
+
     private Rigidbody2D rb;
 
     private Animator _animator;
 
-    Vector2 movementDir;
+    [HideInInspector]
+    public Vector2 movementDir;
     Vector3 lastMoveDir;
 
     bool _canAtack;
@@ -85,22 +91,113 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(NextAtack());
             //Atack logic - Each atack has a diferent animation
             int AtackIndex = Random.Range(0, 3);
-            Debug.Log(AtackIndex);
+            //Debug.Log(AtackIndex);
+
+
+            Vector3 spawnPoint;
+            float atackAngle;
 
             //Logic to swith atacks
             switch (AtackIndex)
             {
                 case 0:
                     _animator.SetTrigger("Machete");
+
+                    if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
+                    {
+                        if (movementDir.x < 0) //Facing left
+                        {
+                            atackAngle = 270;
+                            spawnPoint = transform.position + new Vector3(-1.2f, 0, 0);
+                        }
+                        else //Facing right
+                        {
+                            atackAngle = 90;
+                            spawnPoint = transform.position + new Vector3(1.2f, 0, 0);
+                        }
+                    }
+                    else //Facing Up or down
+                    {
+                        if (movementDir.y > 0) //Facing Up
+                        {
+                            atackAngle = 180;
+                            spawnPoint = transform.position + new Vector3(0, 1.2f, 0);
+                        }
+                        else //Facing Down
+                        {
+                            atackAngle = 0;
+                            spawnPoint = transform.position + new Vector3(0, -1.2f, 0);
+                        }
+                    }
                     //Instantiate Atack
+                    GameObject atack = Instantiate(SwordPrefab, spawnPoint, Quaternion.Euler(0,0, atackAngle));
+
                     break;
                 case 1:
                     _animator.SetTrigger("Gas");
-                    //Isntantiate Gas
+
+                    if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
+                    {
+                        if (movementDir.x < 0) //Facing left
+                        {
+                            atackAngle = 0;
+                            spawnPoint = transform.position + new Vector3(-2.5f, 0, 0);
+                        }
+                        else //Facing right
+                        {
+                            atackAngle = 180;
+                            spawnPoint = transform.position + new Vector3(2.5f, 0, 0);
+                        }
+                    }
+                    else //Facing Up or down
+                    {
+                        if (movementDir.y > 0) //Facing Up
+                        {
+                            atackAngle = 270;
+                            spawnPoint = transform.position + new Vector3(0, 2.5f, 0);
+                        }
+                        else //Facing Down
+                        {
+                            atackAngle = 90;
+                            spawnPoint = transform.position + new Vector3(0, -2.5f, 0);
+                        }
+                    }
+                    //Instantiate Gas
+                    GameObject atack2 = Instantiate(GasPrefab, spawnPoint, Quaternion.Euler(0,0, atackAngle));
+
                     break;
                 case 2:
                     _animator.SetTrigger("Rock");
                     //Instatntiate Rock
+
+                    if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
+                    {
+                        if (movementDir.x < 0) //Facing left
+                        {
+                            atackAngle = 270;
+                            spawnPoint = transform.position + new Vector3(-0.5f, 0, 0);
+                        }
+                        else //Facing right
+                        {
+                            atackAngle = 90;
+                            spawnPoint = transform.position + new Vector3(0.5f, 0, 0);
+                        }
+                    }
+                    else //Facing Up or down
+                    {
+                        if (movementDir.y > 0) //Facing Up
+                        {
+                            atackAngle = 180;
+                            spawnPoint = transform.position + new Vector3(0, 0.5f, 0);
+                        }
+                        else //Facing Down
+                        {
+                            atackAngle = 0;
+                            spawnPoint = transform.position + new Vector3(0, -0.5f, 0);
+                        }
+                    }
+                    //Instantiate Atack
+                    GameObject atack3 = Instantiate(RockPrefab, spawnPoint, Quaternion.Euler(0, 0, atackAngle));
                     break;
             }
             
