@@ -17,7 +17,7 @@ public class TaltuzaIdleBehavior : StateMachineBehaviour
 
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (Vector2.Distance(playerPos.position, patrolLocation.position) < 5.0f)
+		if ((Vector2.Distance(playerPos.position, patrolLocation.position) < 8.0f) | animator.GetBool("isPoisoned"))
 		{
 			animator.SetBool("isFollowing", true);
 		}
@@ -25,6 +25,8 @@ public class TaltuzaIdleBehavior : StateMachineBehaviour
 
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		//Instantiate(effect, animator.transform.position, Quaternion.identity);
+
 	}
+
+
 }
