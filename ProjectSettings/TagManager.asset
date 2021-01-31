@@ -8,6 +8,8 @@ TagManager:
   - EnemyAtack
   - PlayerAtack
   - PatrolSpots
+  - GasRefill
+  - Vegetable
   layers:
   - Default
   - TransparentFX

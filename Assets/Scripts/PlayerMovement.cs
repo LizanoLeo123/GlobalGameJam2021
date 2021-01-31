@@ -5,11 +5,19 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed;
+    public int remainingVegetables;
 
     //Atack Prefabs
     public GameObject GasPrefab;
     public GameObject SwordPrefab;
     public GameObject RockPrefab;
+    public GameObject GasTankPrefab;
+
+    public GameObject SunTrail;
+    
+    public SpriteRenderer gasTank;
+
+    public List<Sprite> poisonTankSprites;
 
     private Rigidbody2D rb;
 
@@ -22,12 +30,20 @@ public class PlayerMovement : MonoBehaviour
     bool _canAtack;
     bool _dash;
 
+    private int _poisonTank;
+
     private void Start()
     {
+        remainingVegetables = 10;
+
         rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _dash = false;
         _canAtack = true;
+        _poisonTank = 4;
+        gasTank.enabled = false;
+        Instantiate(GasTankPrefab, transform.position + new Vector3(2, 0, 0), Quaternion.identity);
+        Instantiate(SunTrail, transform.position + new Vector3(-0.52f, -0.57f, 0), Quaternion.identity);
     }
 
     // Update is called once per frame
@@ -78,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //Start cooldown
             StartCoroutine(CutDash());
-            rb.AddForce(lastMoveDir * 4000f);
+            rb.AddForce(lastMoveDir * 3000f);
         }
     }
 
@@ -136,36 +152,45 @@ public class PlayerMovement : MonoBehaviour
                 case 1:
                     _animator.SetTrigger("Gas");
 
-                    if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
+                    //Poison stock logic
+                    gasTank.enabled = true; //Gas tank sprite
+                    StartCoroutine(HideGas());
+                    if(_poisonTank > 0)
                     {
-                        if (movementDir.x < 0) //Facing left
-                        {
-                            atackAngle = 0;
-                            spawnPoint = transform.position + new Vector3(-2.5f, 0, 0);
-                        }
-                        else //Facing right
-                        {
-                            atackAngle = 180;
-                            spawnPoint = transform.position + new Vector3(2.5f, 0, 0);
-                        }
-                    }
-                    else //Facing Up or down
-                    {
-                        if (movementDir.y > 0) //Facing Up
-                        {
-                            atackAngle = 270;
-                            spawnPoint = transform.position + new Vector3(0, 2.5f, 0);
-                        }
-                        else //Facing Down
-                        {
-                            atackAngle = 90;
-                            spawnPoint = transform.position + new Vector3(0, -2.5f, 0);
-                        }
-                    }
-                    //Instantiate Gas
-                    GameObject atack2 = Instantiate(GasPrefab, spawnPoint, Quaternion.Euler(0,0, atackAngle));
+                        _poisonTank--;
+                        gasTank.sprite = poisonTankSprites[_poisonTank];
 
+                        if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
+                        {
+                            if (movementDir.x < 0) //Facing left
+                            {
+                                atackAngle = 0;
+                                spawnPoint = transform.position + new Vector3(-2.5f, 0, 0);
+                            }
+                            else //Facing right
+                            {
+                                atackAngle = 180;
+                                spawnPoint = transform.position + new Vector3(2.5f, 0, 0);
+                            }
+                        }
+                        else //Facing Up or down
+                        {
+                            if (movementDir.y > 0) //Facing Up
+                            {
+                                atackAngle = 270;
+                                spawnPoint = transform.position + new Vector3(0, 2.5f, 0);
+                            }
+                            else //Facing Down
+                            {
+                                atackAngle = 90;
+                                spawnPoint = transform.position + new Vector3(0, -2.5f, 0);
+                            }
+                        }
+                        //Instantiate Gas
+                        GameObject atack2 = Instantiate(GasPrefab, spawnPoint, Quaternion.Euler(0, 0, atackAngle));
+                    }
                     break;
+
                 case 2:
                     _animator.SetTrigger("Rock");
                     //Instatntiate Rock
@@ -205,16 +230,40 @@ public class PlayerMovement : MonoBehaviour
         
     }
 
+    public void CollectVegetable()
+    {
+        remainingVegetables--;
+        //Update UI;
+        Debug.Log("Remaining vegetables: " + remainingVegetables);
+    }
+
     IEnumerator NextAtack()
     {
         yield return new WaitForSeconds(0.5f);
         _canAtack = true;
     }
 
+    IEnumerator HideGas()
+    {
+        yield return new WaitForSeconds(1.5f);
+        gasTank.enabled = false;
+    }
+
     IEnumerator CutDash()
     {
         yield return new WaitForSeconds(0.1f);
         _dash = false;
-        rb.velocity = Vector2.zero;
+        rb.velocity = Vector2.zero;        
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.transform.tag == "GasRefill")
+        {
+            _poisonTank = 4;
+            gasTank.sprite = poisonTankSprites[3];
+            gasTank.enabled = true;
+            StartCoroutine(HideGas());
+        }
     }
 }
