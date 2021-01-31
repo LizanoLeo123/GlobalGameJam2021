@@ -41,6 +41,7 @@ public class InputBehavior : MonoBehaviour
             pKeyboard = true;
             pController = false;
             pMouse = false;
+            pMove.playingWithMouse = false;
             //Update UI with Keyboard icons
             _uiManager.ShowKeyboardUI();
             //Debug.Log("Playing with keyboard");

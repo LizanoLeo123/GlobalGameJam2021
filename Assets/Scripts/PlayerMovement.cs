@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     public GameObject RockPrefab;
     public GameObject GasTankPrefab;
 
+    public List<AudioClip> playerSounds;
+
     public GameObject SunTrail;
     
     public SpriteRenderer gasTank;
@@ -47,10 +49,13 @@ public class PlayerMovement : MonoBehaviour
     bool _canAtack;
     bool _dash;
 
+    bool _dead;
+
     private int _poisonTank;
 
     private void Start()
     {
+        _dead = false;
         playingWithMouse = false;
         remainingVegetables = 10;
         _currentHealth = 10;
@@ -72,36 +77,41 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playingWithMouse)
+        if (!_dead)
         {
-            //Input
-            movementDir.x = Input.GetAxisRaw("Horizontal");
-            movementDir.y = Input.GetAxisRaw("Vertical");
+            if (!playingWithMouse)
+            {
+                //Input
+                movementDir.x = Input.GetAxisRaw("Horizontal");
+                movementDir.y = Input.GetAxisRaw("Vertical");
 
-            _animator.SetFloat("Horizontal", movementDir.x);
-            _animator.SetFloat("Vertical", movementDir.y);
-            _animator.SetFloat("Speed", movementDir.sqrMagnitude);
+                _animator.SetFloat("Horizontal", movementDir.x);
+                _animator.SetFloat("Vertical", movementDir.y);
+                _animator.SetFloat("Speed", movementDir.sqrMagnitude);
+            }
+
+            Atack();
+            Dash();
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                TakeDamage(1);
+            }
         }
-
-        Atack();
-        Dash();
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            TakeDamage(1);
-        }
-        
     }
 
     private void FixedUpdate()
     {
-        //Movement
-        if (!playingWithMouse)
-            Move();
-        else
-            MoveWithMouse();
-        
-        ManageDash();
+        if (!_dead)
+        {
+            //Movement
+            if (!playingWithMouse)
+                Move();
+            else
+                MoveWithMouse();
+
+            ManageDash();
+        }
     }
 
     void Move()
@@ -126,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
         //Dash animation
 
         //Dash Logic
-        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Joystick1Button1) || Input.GetMouseButtonDown(1)) && !_dash)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button2) || Input.GetMouseButtonDown(1)) && !_dash)
         {
             _dash = true;
         }
@@ -144,13 +154,23 @@ public class PlayerMovement : MonoBehaviour
 
     void Atack()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetMouseButtonDown(0)) && _canAtack) //Input.GetAxisRaw("Atack") > 0
+        int AtackIndex;
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetMouseButtonDown(0))
+            AtackIndex = 0; //Machetazo
+        else if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.Joystick1Button1) || Input.GetMouseButtonDown(1))
+            AtackIndex = 1; //Gas
+        else if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.Joystick1Button3) || Input.GetMouseButtonDown(2))
+            AtackIndex = 2; //Rock
+        else
+            AtackIndex = 4;
+
+        if (AtackIndex < 4 && _canAtack) //Input.GetAxisRaw("Atack") > 0 (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Joystick1Button0) || Input.GetMouseButtonDown(0))
         {
             //AtackCooldown
             _canAtack = false;
             StartCoroutine(NextAtack());
             //Atack logic - Each atack has a diferent animation
-            int AtackIndex = Random.Range(0, 3);
+            //int AtackIndex = Random.Range(0, 3);
 
             Vector3 spawnPoint;
             float atackAngle;
@@ -162,6 +182,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 case 0:
                     _animator.SetTrigger("Machete");
+                    //Play Machete Sound
+                    AudioSource.PlayClipAtPoint(playerSounds[0], transform.position);
 
                     if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
                     {
@@ -195,12 +217,15 @@ public class PlayerMovement : MonoBehaviour
                     break;
                 case 1:
                     _animator.SetTrigger("Gas");
-
+                    
                     //Poison stock logic
                     gasTank.enabled = true; //Gas tank sprite
                     StartCoroutine(HideGas());
                     if(_poisonTank > 0)
                     {
+                        //Play Gas  Sound
+                        AudioSource.PlayClipAtPoint(playerSounds[1], transform.position);
+
                         _poisonTank--;
                         gasTank.sprite = poisonTankSprites[_poisonTank];
 
@@ -237,8 +262,10 @@ public class PlayerMovement : MonoBehaviour
 
                 case 2:
                     _animator.SetTrigger("Rock");
-                    //Instatntiate Rock
+                    //Play Rock Sound
+                    AudioSource.PlayClipAtPoint(playerSounds[2], transform.position);
 
+                    //Instatntiate Rock
                     if (Mathf.Abs(movementDir.x) > Mathf.Abs(movementDir.y)) //Facing left or right
                     {
                         if (movementDir.x < 0) //Facing left
@@ -286,12 +313,18 @@ public class PlayerMovement : MonoBehaviour
         //Show healthbar
         healthbarObject.SetActive(true);
 
+        //Play player damage sound
+        AudioSource.PlayClipAtPoint(playerSounds[3], transform.position);
+
         _currentHealth -= damage;
         healthbar.SetHealth(_currentHealth);
 
         if(_currentHealth <= 0)
         {
             //Die Logic
+            _dead = true;
+            _animator.SetTrigger("Dead");
+            AudioSource.PlayClipAtPoint(playerSounds[4], transform.position);
         }
         else
         {
@@ -329,6 +362,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(collision.transform.tag == "GasRefill")
         {
+            AudioSource.PlayClipAtPoint(playerSounds[5], transform.position);
             _poisonTank = 4;
             gasTank.sprite = poisonTankSprites[3];
             gasTank.enabled = true;
