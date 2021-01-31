@@ -8,7 +8,7 @@ public class TaltuzaStunnedBehavior : StateMachineBehaviour
     {
         animator.SetBool("isPatrolling", false);
         animator.SetBool("isFollowing", false);
-        animator.SetBool("isPoisioned", false);
+        animator.SetBool("isPoisoned", false);
         animator.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 
     }

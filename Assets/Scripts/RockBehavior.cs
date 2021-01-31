@@ -6,6 +6,8 @@ public class RockBehavior : MonoBehaviour
 {
     Rigidbody2D rb;
     public CircleCollider2D _collider;
+
+    private TaltuzaController taltuza;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -24,8 +26,9 @@ public class RockBehavior : MonoBehaviour
     {
         if (collision.transform.tag == "Enemy")
         {
-            //Logic To damage Enemy
-            //Debug.Log("RockHit");
+
+            taltuza = collision.transform.GetComponent<TaltuzaController>();
+            taltuza.GetComponent<Animator>().SetTrigger("isStunned");
             _collider.enabled = false;
             Destroy(gameObject, 0.1f);
         }

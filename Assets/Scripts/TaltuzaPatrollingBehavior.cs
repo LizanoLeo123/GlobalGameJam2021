@@ -37,7 +37,6 @@ public class TaltuzaPatrollingBehavior : StateMachineBehaviour
         if (animator.GetBool("isPoisoned"))
         {
             temp.SetActive(true);
-            poisonAnimator.SetBool("isPoisoned", true);
             if (Vector2.Distance(animator.transform.position, patrol.patrolPoints[randomSpot].position) > 0.2f)
             {
                 //animator.transform.position = Vector2.MoveTowards(animator.transform.position, patrol.patrolPoints[randomSpot].position, speed * Time.deltaTime);

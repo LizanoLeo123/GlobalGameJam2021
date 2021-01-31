@@ -25,13 +25,4 @@ public class TaltuzaAnimationController : MonoBehaviour
         _animator.SetFloat("VelY", _rigidbody2d.velocity.normalized.y);
     }
 
-    public void DoCoroutine()
-    {
-        StartCoroutine(IsStunned());
-    }
-
-    IEnumerator IsStunned()
-    {
-        yield return new WaitForSeconds(8.0f);
-    }
 }
