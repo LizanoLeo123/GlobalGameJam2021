@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  patrolNumber: 1
+  patrolNumber: 5
 --- !u!114 &-8073587500238474298
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -26,7 +26,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a10e1426edb7b46bafc02ff717f0d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patrolNumber: 1
+  patrolNumber: 3
 --- !u!1107 &-7817911563457633278
 AnimatorStateMachine:
   serializedVersion: 5
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  patrolNumber: 1
+  patrolNumber: 5
   taltuzaPoisonPrefab: {fileID: 3147095199840597897, guid: abca9c95b260f1047b1822d125d6585d,
     type: 3}
 --- !u!1101 &3330303726820011030

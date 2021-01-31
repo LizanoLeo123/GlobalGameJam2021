@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TaltuzaController : MonoBehaviour
 {
-
+    public int patrolNumber;
     private PlayerMovement player;
     private Animator _animator;
     // Start is called before the first frame update
